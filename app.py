@@ -7,7 +7,7 @@ from db import write_to_influxdb
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Berhasil terhubung ke broker MQTT")
-        client.subscribe(config.MQTT_TOPIC)  # Menerima pesan dari semua topik 
+        client.subscribe(f"{config.MQTT_TOPIC}#")  # Menerima pesan dari semua topik 
     else:
         print(f"Gagal terhubung dengan kode hasil: {rc}")
 
