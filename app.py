@@ -2,7 +2,6 @@ import config
 import paho.mqtt.client as mqtt
 from db import write_to_influxdb  
 
-
 # Definisikan callback untuk event ketika terhubung ke broker MQTT
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -22,6 +21,7 @@ def on_message(client, userdata, msg):
 
             # Mengubah kunci menjadi format yang diinginkan
             key_mapping = {
+                # --- Parameter Kelistrikan (Power Meter) ---
                 "currentL1": "Current L1",
                 "currentL2": "Current L2",
                 "currentL3": "Current L3",
@@ -32,13 +32,25 @@ def on_message(client, userdata, msg):
                 "reactivePower": "Reactive Power",
                 "powerFactor": "Power Factor",
                 "frequency": "Frequency",
+                
+                # --- Parameter Mekanikal (ENGINE-DG7 dari DSE 7310) ---
+                "oilPressure": "Oil Pressure",
+                "coolantTemp": "Coolant Temp",
+                "chargeAlt": "Charge Alt",
+                "batteryVoltage": "Battery Voltage",
+                "engineRpm": "Engine RPM",
+                
+                # Timestamp diabaikan dari penulisan nilai karena DB meng-handle waktu masuk
                 "timestamp": "Timestamp"
             }
+            
             # Mencocokkan kunci dengan key_mapping
             formatted_key = key_mapping.get(key, None)
 
             # Cek apakah value bisa dikonversi menjadi float
             try:
+                # Blok ini secara otomatis akan mengubah value "null" (jika koneksi sensor
+                # dari Node-RED terputus) menjadi exception dan jatuh ke except block
                 value = float(value)
             except ValueError:
                 value = None  # Jika tidak bisa dikonversi, set value menjadi None
@@ -47,7 +59,7 @@ def on_message(client, userdata, msg):
             if formatted_key and formatted_key != "Timestamp":
                 write_to_influxdb(measurement, formatted_key, value)
                 print(f"Data berhasil disimpan: {measurement} -> {formatted_key}: {value}")
-            else:
+            elif not formatted_key:
                 print(f"Kunci tidak valid: {key}. Data tidak disimpan.")
         else:
             print(f"Format topik tidak dikenali: {msg.topic}")
