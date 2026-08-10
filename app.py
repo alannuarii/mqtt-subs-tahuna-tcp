@@ -36,6 +36,7 @@ def on_message(client, userdata, msg):
                 # --- Parameter Mekanikal (ENGINE-DG7 dari DSE 7310) ---
                 "oilPressure": "Oil Pressure",
                 "coolantTemp": "Coolant Temp",
+                "oilTemp": "Oil Temp",
                 "chargeAlt": "Charge Alt",
                 "batteryVoltage": "Battery Voltage",
                 "engineRpm": "Engine RPM",
