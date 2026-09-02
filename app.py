@@ -19,6 +19,13 @@ def on_message(client, userdata, msg):
             key = topic_parts[2]  
             value = msg.payload.decode()  
 
+            # Kunci-kunci 5 parameter engine lama yang hanya untuk Unit 6 dan 7
+            old_engine_keys = ["oilPressure", "coolantTemp", "chargeAlt", "batteryVoltage", "engineRpm"]
+
+            # Hanya izinkan 5 parameter engine lama jika dari Unit 6 atau Unit 7
+            if key in old_engine_keys and measurement.lower() not in ["unit6", "unit7"]:
+                return  # Abaikan untuk engine 1, 8, 9
+
             # Mengubah kunci menjadi format yang diinginkan
             key_mapping = {
                 # =============================================================
@@ -69,11 +76,11 @@ def on_message(client, userdata, msg):
                 "activePowerL1_kW": "Active Power L1 kW",
                 "activePowerL2_kW": "Active Power L2 kW",
                 "activePowerL3_kW": "Active Power L3 kW",
-                "activePowerTotal_kW": "Active Power Total kW",
+                "activePowerTotal_kW": "Active Power",
                 "reactivePowerL1_kVAr": "Reactive Power L1 kVAr",
                 "reactivePowerL2_kVAr": "Reactive Power L2 kVAr",
                 "reactivePowerL3_kVAr": "Reactive Power L3 kVAr",
-                "reactivePowerTotal_kVAr": "Reactive Power Total kVAr",
+                "reactivePowerTotal_kVAr": "Reactive Power",
 
                 # =============================================================
                 # --- 5. PENAMBAHAN POWER FACTOR PER FASA & TOTAL ---
@@ -81,8 +88,8 @@ def on_message(client, userdata, msg):
                 "powerFactorL1": "Power Factor L1",
                 "powerFactorL2": "Power Factor L2",
                 "powerFactorL3": "Power Factor L3",
-                "powerFactorTotal": "Power Factor Total",
-                "generatorFreq": "Generator Frequency",
+                "powerFactorTotal": "Power Factor",
+                "generatorFreq": "Frequency",
 
                 # =============================================================
                 # --- 6. PENAMBAHAN AKUMULASI ENERGI & JAM KERJA ---
