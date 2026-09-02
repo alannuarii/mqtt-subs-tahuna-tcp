@@ -23,7 +23,7 @@ def on_message(client, userdata, msg):
             old_engine_keys = ["oilPressure", "coolantTemp", "chargeAlt", "batteryVoltage", "engineRpm"]
 
             # Hanya izinkan 5 parameter engine lama jika dari Unit 6 atau Unit 7
-            if key in old_engine_keys and measurement.lower() not in ["unit6", "unit7"]:
+            if key in old_engine_keys and measurement.lower() not in ["engine-dg6", "engine-dg7"]:
                 return  # Abaikan untuk engine 1, 8, 9
 
             # Mengubah kunci menjadi format yang diinginkan
