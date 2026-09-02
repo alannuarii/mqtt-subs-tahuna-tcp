@@ -43,7 +43,7 @@ def on_message(client, userdata, msg):
                 "frequency": "Frequency",
                 "oilPressure": "Oil Pressure",
                 "coolantTemp": "Coolant Temp",
-                "chargeAlt": "Charge Alt",
+                "chargeAltVoltage": "Charge Alt",
                 "batteryVoltage": "Battery Voltage",
                 "engineRpm": "Engine RPM",
                 "timestamp": "Timestamp",
@@ -54,7 +54,6 @@ def on_message(client, userdata, msg):
                 "controlMode": "Control Mode",
                 "globalAlarmStatus": "Global Alarm Status",
                 "engineState": "Engine State",
-                "chargeAltVoltage": "Charge Alt",
 
                 # =============================================================
                 # --- 3. PENAMBAHAN TEGANGAN & ARUS LENGKAP ---
@@ -68,7 +67,6 @@ def on_message(client, userdata, msg):
                 "currentG": "Current Ground",
                 "currentAvg": "Current Avg",
                 "currentEarth": "Current Earth",
-                "phaseRotation": "Phase Rotation",
 
                 # =============================================================
                 # --- 4. PENAMBAHAN DAYA PER FASA & TOTAL (kW & kVAR) ---
