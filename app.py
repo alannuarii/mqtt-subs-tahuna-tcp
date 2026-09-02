@@ -20,7 +20,7 @@ def on_message(client, userdata, msg):
             value = msg.payload.decode()  
 
             # Kunci-kunci 5 parameter engine lama yang hanya untuk Unit 6 dan 7
-            old_engine_keys = ["oilPressure", "coolantTemp", "chargeAlt", "batteryVoltage", "engineRpm"]
+            old_engine_keys = ["oilPressure", "coolantTemp", "chargeAlt", "chargeAltVoltage", "batteryVoltage", "engineRpm"]
 
             # Hanya izinkan 5 parameter engine lama jika dari Unit 6 atau Unit 7
             if key in old_engine_keys and measurement.lower() not in ["engine-dg6", "engine-dg7"]:
@@ -54,7 +54,7 @@ def on_message(client, userdata, msg):
                 "controlMode": "Control Mode",
                 "globalAlarmStatus": "Global Alarm Status",
                 "engineState": "Engine State",
-                "chargeAltVoltage": "Charge Alt Voltage",
+                "chargeAltVoltage": "Charge Alt",
 
                 # =============================================================
                 # --- 3. PENAMBAHAN TEGANGAN & ARUS LENGKAP ---
