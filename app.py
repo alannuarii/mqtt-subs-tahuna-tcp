@@ -44,7 +44,10 @@ def on_message(client, userdata, msg):
                 "powerFactorL3": "Power Factor L3", "powerFactorTotal": "Power Factor",
                 "generatorFreq": "Frequency",
                 "engineRunTimeHours": "Engine Run Time Hours", "energyActiveKWh": "Energy Active kWh",
-                "energyReactiveKVArh": "Energy Reactive kVARh", "startCount": "Start Count"
+                "energyReactiveKVArh": "Energy Reactive kVARh", "startCount": "Start Count",
+                "airTemperature": "Air Temperature", "externalTemperature": "External Temperature",
+                "globalIrradiance": "Global Irradiance", "windDirection": "Wind Direction",
+                "windSpeed": "Wind Speed", "relativeHumidity": "Relative Humidity"
             }
             
             # 🚀 WADAH PENAMPUNG PARAMETER
