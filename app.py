@@ -72,24 +72,11 @@ def on_message(client, userdata, msg):
 
                 if formatted_key and formatted_key != "Timestamp" and value is not None:
                     fields_to_write[formatted_key] = value
-                    # Dual alias untuk dashboard legacy vs analitik baru
-                    if key == "currentAvg":
-                        fields_to_write["Current Avg"] = value
-                    elif key in ("voltageLLAvg", "voltageAvg"):
-                        fields_to_write["Voltage LL Avg"] = value
             
             # 🚀 TEMBAKKAN SEMUA DATA SEKALIGUS (1x HTTP Request)
             if fields_to_write:
                 write_multiple_to_influxdb(measurement, fields_to_write)
                 print(f"[{measurement}] Berhasil menyimpan {len(fields_to_write)} parameter sekaligus tanpa delay.")
-
-                # Dual write untuk kompatibilitas backward Grafana (DSSW1 -> LVSW1, DSSW2 -> LVSW2)
-                if measurement == "DSSW1":
-                    write_multiple_to_influxdb("LVSW1", fields_to_write)
-                    print(f"[LVSW1 (alias DSSW1)] Berhasil menyimpan {len(fields_to_write)} parameter sekaligus tanpa delay.")
-                elif measurement == "DSSW2":
-                    write_multiple_to_influxdb("LVSW2", fields_to_write)
-                    print(f"[LVSW2 (alias DSSW2)] Berhasil menyimpan {len(fields_to_write)} parameter sekaligus tanpa delay.")
 
         else:
             print(f"Format topik tidak dikenali: {msg.topic}")
