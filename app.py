@@ -28,13 +28,15 @@ def on_message(client, userdata, msg):
 
             key_mapping = {
                 "currentL1": "Current L1", "currentL2": "Current L2", "currentL3": "Current L3",
+                "currentAvg": "Current",
                 "voltageL1L2": "Voltage L1 L2", "voltageL2L3": "Voltage L2 L3", "voltageL3L1": "Voltage L3 L1",
+                "voltageLLAvg": "Voltage", "voltageAvg": "Voltage", "voltageLNAvg": "Voltage LN Avg",
+                "voltageL1N": "Voltage L1 N", "voltageL2N": "Voltage L2 N", "voltageL3N": "Voltage L3 N",
                 "activePower": "Active Power", "reactivePower": "Reactive Power", "powerFactor": "Power Factor",
                 "frequency": "Frequency", "oilPressure": "Oil Pressure", "coolantTemp": "Coolant Temp",
                 "chargeAltVoltage": "Charge Alt", "batteryVoltage": "Battery Voltage", "engineRpm": "Engine RPM",
                 "timestamp": "Timestamp",
                 "controlMode": "Control Mode", "globalAlarmStatus": "Global Alarm Status", "engineState": "Engine State",
-                "voltageL1N": "Voltage L1 N", "voltageL2N": "Voltage L2 N", "voltageL3N": "Voltage L3 N",
                 "currentN": "Current Neutral", "currentG": "Current Ground", "currentEarth": "Current Earth",
                 "activePowerL1_kW": "Active Power L1 kW", "activePowerL2_kW": "Active Power L2 kW",
                 "activePowerL3_kW": "Active Power L3 kW", "activePowerTotal_kW": "Active Power",
@@ -47,7 +49,11 @@ def on_message(client, userdata, msg):
                 "energyReactiveKVArh": "Energy Reactive kVARh", "startCount": "Start Count",
                 "airTemperature": "Air Temperature", "externalTemperature": "External Temperature",
                 "globalIrradiance": "Global Irradiance", "windDirection": "Wind Direction",
-                "windSpeed": "Wind Speed", "relativeHumidity": "Relative Humidity"
+                "windSpeed": "Wind Speed", "relativeHumidity": "Relative Humidity",
+                "energyActiveDelivered": "Active Energy Delivered",
+                "energyActiveReceived": "Active Energy Received",
+                "energyImport": "Energy Import",
+                "energyExport": "Energy Export"
             }
             
             # 🚀 WADAH PENAMPUNG PARAMETER
@@ -65,13 +71,25 @@ def on_message(client, userdata, msg):
                     value = None  
 
                 if formatted_key and formatted_key != "Timestamp" and value is not None:
-                    # MASUKKAN KE DALAM WADAH PENAMPUNG (Tanpa memanggil InfluxDB)
                     fields_to_write[formatted_key] = value
+                    # Dual alias untuk dashboard legacy vs analitik baru
+                    if key == "currentAvg":
+                        fields_to_write["Current Avg"] = value
+                    elif key in ("voltageLLAvg", "voltageAvg"):
+                        fields_to_write["Voltage LL Avg"] = value
             
             # 🚀 TEMBAKKAN SEMUA DATA SEKALIGUS (1x HTTP Request)
             if fields_to_write:
                 write_multiple_to_influxdb(measurement, fields_to_write)
                 print(f"[{measurement}] Berhasil menyimpan {len(fields_to_write)} parameter sekaligus tanpa delay.")
+
+                # Dual write untuk kompatibilitas backward Grafana (DSSW1 -> LVSW1, DSSW2 -> LVSW2)
+                if measurement == "DSSW1":
+                    write_multiple_to_influxdb("LVSW1", fields_to_write)
+                    print(f"[LVSW1 (alias DSSW1)] Berhasil menyimpan {len(fields_to_write)} parameter sekaligus tanpa delay.")
+                elif measurement == "DSSW2":
+                    write_multiple_to_influxdb("LVSW2", fields_to_write)
+                    print(f"[LVSW2 (alias DSSW2)] Berhasil menyimpan {len(fields_to_write)} parameter sekaligus tanpa delay.")
 
         else:
             print(f"Format topik tidak dikenali: {msg.topic}")
